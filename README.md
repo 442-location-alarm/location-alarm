@@ -8,6 +8,9 @@ Alarm Me is a mobile application used to wake the user when they get near a cert
 
 ## Team and Roles
 Emily Tao - Marketing, Engineering
+
 James McCutcheon - Engineering
+
 Joy Phillips - Leader, Design
+
 Madeleine Stevenson - Project Management, Support
