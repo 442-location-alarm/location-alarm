@@ -91,7 +91,7 @@ Alarm creation and editing.
         - The created alarm object
 - Update an Alarm data object if the user makes edits to an existing alarm
     - Input:
-        - The field to be changed: name - string, location - string (this would trigger the GoogleMaps and GooglePlaces to find the location and update the latitude and longitude), distance (double), alert (enum)
+        - The field to be changed: name - string, location - string (this would trigger GooglePlaces to find the location and update the latitude and longitude and GoogleMaps to show the new location), distance - double, alert - enum
         - The value to change the field to
     - Output:
         - N/A
