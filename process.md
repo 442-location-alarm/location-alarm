@@ -16,4 +16,7 @@ James will be taking ownership of the Alarm Storage and the Alarm Display. He ha
 giving him two components to take ownership of. Additionally, they are related components, so it will make it easier to coordinate
 processes because he owns both. Additionally, James has special experience with databases from INFO 442 and his internship 
 last summer. 
-Emily will be taking ownership of the Alarm Manager 
+Emily will be taking ownership of the Alarm Manager component because it is connected with all of the other components and 
+she is willing to coordinate with every member of the team. 
+Maddie is taking ownership of the Google Maps component because it is 
+
