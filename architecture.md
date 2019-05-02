@@ -143,17 +143,12 @@ In-memory storage of user-created alarms and display of those alarms
 ## GoogleMaps
 
 ### Responsibilities
-Handles getting the latitude and longitude of user-input locations. Also, creates a map graphic for the alarm showing the location and the radius around that location.
+Handles creating a map graphic for the alarm showing the location and the radius around that location.
 
 ### Data Encapsulated
 - The Google Maps android SDK
 
 ### Functionality
-- Get latitude and longitude for a location
-    - Input:
-        - Query, representing a name, address, or coordinates for a location - string
-    - Output:
-        - A double array of length 2 (0-indexed) where index 0 is the latitude and index 1 is the longitude
 - Return alarm location graphic
     - Inputs:
         - Latitude - double
@@ -164,4 +159,33 @@ Handles getting the latitude and longitude of user-input locations. Also, create
 
 ### Connections
 - Called in the Alarm create and update methods to show a visual representation of the alarm on the map
-- Create and update (if updating the location) methods of Alarm call GoogleMaps to get the latitude and longitude of the location
+
+## GooglePlaces
+
+### Responsibilities
+Handles searching for places based on user-input parameters and displays possible matching places in a list for the user to select. Also controls selecting current or nearby locations for alarm creation.
+
+### Data Encapsulated
+- The Google Places API
+
+### Functionality
+- Query Places API for possible locations
+    - Input:
+        - Query, representing a name, address, or coordinates for a location - string
+    - Output:
+        - JSON output including fields geometry, name, and formatted_address.
+- Display alarm location result options
+    - Inputs:
+        - ResultLatitude - double
+        - ResultLongitude - double
+        - CurrentLatitude - double
+        - CurrentLongitude - double
+        - Name
+        - Formatted Address
+    - Output:
+        - ListItem for results list including Name, Address, and distance from user's current location
+
+### Connections
+- Called in the Alarm create and update if the alarm location is based on a search and not on a nearby location.
+- Passes resulting JSON to GoogleMaps for display during editing.
+- Calls LocationManager for access to device current location.
