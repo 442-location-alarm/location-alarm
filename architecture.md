@@ -82,14 +82,16 @@ Alarm creation and editing.
 - Create an alarm
     - Inputs:
         - Name of the alarm - string
-        - Location of the alarm (name, address, or coordinates depending on what is entered - the method calls the Google Maps API to determine latitude & longitude) - string
+        - Location of the alarm (name, address, or coordinates depending on what is entered) - string
+        - Latitude - double
+        - Longitude - double
         - Distance from the alarm location - double
         - Alert - enum (“buzz” or “ring” or “both”)
     - Output:
         - The created alarm object
 - Update an Alarm data object if the user makes edits to an existing alarm
     - Input:
-        - The field to be changed (name - string, location - string (this would trigger the Google Maps API and also update the latitude and longitude), distance (double), alert (enum)
+        - The field to be changed: name - string, location - string (this would trigger the GoogleMaps and GooglePlaces to find the location and update the latitude and longitude), distance (double), alert (enum)
         - The value to change the field to
     - Output:
         - N/A
@@ -103,7 +105,7 @@ Alarm creation and editing.
 ### Connections
 - Alarms are added and updated in the AlarmList
 - Enable and disable call the LocationManager to add and remove proximity alerts and call the phone OS to send/remove a notification
-- Create and update (if updating the location) methods call GooglePlaces to get the latitude and longitude of the location
+- GooglePlaces is used to get latitude and longitude to create or update an alarm
 - Create and update call GoogleMaps to show the alarm on a map
 
 ## AlarmList
@@ -173,7 +175,7 @@ Handles searching for places based on user-input parameters and displays possibl
     - Input:
         - Query, representing a name (or even "current location"), address, or coordinates for a location - string
     - Output:
-        - Double array of size 2 - the first element is latitude and the second is longitude
+        - JSON output - an array of objects including fields geometry (latitude and longitude), name, and formatted_address.
 
 ### Connections
-- Called in the Alarm create and update (if updating location) to find latitude and longitude
+- Used to find latitude and longitude to create/update an alarm
