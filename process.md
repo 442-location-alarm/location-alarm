@@ -18,5 +18,8 @@ processes because he owns both. Additionally, James has special experience with 
 last summer. 
 Emily will be taking ownership of the Alarm Manager component because it is connected with all of the other components and 
 she is willing to coordinate with every member of the team. 
-Maddie is taking ownership of the Google Maps component because it is 
+Maddie is taking ownership of the Google Maps component because she has had experience with the 
+Google Maps API from an Android development class and is interested in working with Maps. Joy is taking ownership of the 
+Notification Manager and Google Places components because she also has experience with the Google APIs and has had 
+experience with notifications in Android from her Android development class. 
 
