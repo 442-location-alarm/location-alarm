@@ -103,7 +103,7 @@ Alarm creation and editing.
 ### Connections
 - Alarms are added and updated in the AlarmList
 - Enable and disable call the LocationManager to add and remove proximity alerts and call the phone OS to send/remove a notification
-- Create and update (if updating the location) methods call GoogleMaps to get the latitude and longitude of the location
+- Create and update (if updating the location) methods call GooglePlaces to get the latitude and longitude of the location
 - Create and update call GoogleMaps to show the alarm on a map
 
 ## AlarmList
@@ -171,21 +171,9 @@ Handles searching for places based on user-input parameters and displays possibl
 ### Functionality
 - Query Places API for possible locations
     - Input:
-        - Query, representing a name, address, or coordinates for a location - string
+        - Query, representing a name (or even "current location"), address, or coordinates for a location - string
     - Output:
-        - JSON output including fields geometry, name, and formatted_address.
-- Display alarm location result options
-    - Inputs:
-        - ResultLatitude - double
-        - ResultLongitude - double
-        - CurrentLatitude - double
-        - CurrentLongitude - double
-        - Name
-        - Formatted Address
-    - Output:
-        - ListItem for results list including Name, Address, and distance from user's current location
+        - Double array of size 2 - the first element is latitude and the second is longitude
 
 ### Connections
-- Called in the Alarm create and update if the alarm location is based on a search and not on a nearby location.
-- Passes resulting JSON to GoogleMaps for display during editing.
-- Calls LocationManager for access to device current location.
+- Called in the Alarm create and update to find latitude and longitude
