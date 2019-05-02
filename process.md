@@ -23,3 +23,8 @@ Google Maps API from an Android development class and is interested in working w
 Notification Manager and Google Places components because she also has experience with the Google APIs and has had 
 experience with notifications in Android from her Android development class. 
 
+> By what date will you have a release candidate? 
+
+We will have a release candidate by three days before the due date. 
+
+
