@@ -176,4 +176,4 @@ Handles searching for places based on user-input parameters and displays possibl
         - Double array of size 2 - the first element is latitude and the second is longitude
 
 ### Connections
-- Called in the Alarm create and update to find latitude and longitude
+- Called in the Alarm create and update (if updating location) to find latitude and longitude
