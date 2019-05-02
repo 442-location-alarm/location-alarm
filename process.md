@@ -27,4 +27,8 @@ experience with notifications in Android from her Android development class.
 
 We will have a release candidate by three days before the due date. 
 
+> What practices will you use to know if you're making progress toward that release candidate?
+
+> What practices will you follow to improve your process if it's not working?
+
 
