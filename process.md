@@ -16,6 +16,9 @@ James will be taking ownership of AlarmStore and AlarmList. He has had the most 
 ### Alarm
 Emily will be taking ownership of the Alarm component because it is connected with all of the other components and she is willing to coordinate with every member of the team. Joy will implement the enable and disable functions for Alarm since those two functions involve sending/removing notifications and she has experience with that.
 
+### LocationManager
+This component is prebuilt, but Joy will be using it to add/remove proximity alerts in the enable/disable functions of Alarm.
+
 ### GoogleMaps and GooglePlaces
 Maddie is taking ownership of the GoogleMaps and GooglePlaces components because she has had experience with the Google Maps API from an Android development class and is interested in taking it further to implement our location alarm.
 
@@ -25,10 +28,8 @@ We will have a release candidate by June 7th (three days before the due date). W
 
 > What practices will you use to know if you're making progress toward that release candidate?
 
-We will be checking commit history daily on GitHub to make sure that people are doing their work. We have implemented automatic alerts in our Discord channel so everyone gets a notification when someone pushes to GitHub. We will be doing unit testing on all of our functions and also doing integration testing.
+We will be checking commit history daily on GitHub to make sure that people are doing their work. We have implemented automatic alerts in our Discord channel so everyone gets a notification when someone pushes to GitHub. We be practicing Test Driven Development and aiming for 80% test coverage.
 
 > What practices will you follow to improve your process if it's not working?
 
-If our process is not working, we will convene as a group over Discord or in person to talk about how we can improve our
-process and get our work done in time to meet the deadline. If one or more group members is not available to chat about the
-deadline, we will reschedule the meeting or fill them in about the new process.
+If our process is not working, we will convene as a group over Discord or in person to talk about how we can improve our process and get our work done in time to meet the deadline. The deliverable from this meeting will be an updated process document so that we have our decisions written down and can refer back to the what and the why. If one or more group members is not available to chat, we will reschedule the meeting unless he or she gives permission to make decisions and report back since we believe that everyone should have input.
