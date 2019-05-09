@@ -32,7 +32,7 @@ Every member of the group will be checking commit history daily on GitHub to mak
 - AlarmStore, AlarmList, GoogleMaps, GooglePlaces due 5/30
 - Alarm due 6/4
 
-We chose these deadlines so we can really focus on setting everything up for the Alarm component the first two sprint, then focus on finishing the Alarm component halfway through the last sprint so we can work on the visuals of the application in the three days before our release candidate is due.
+We chose these deadlines so we can focus on setting everything up for the Alarm component the first two sprints, then focus on finishing the Alarm component halfway through the last sprint so we can work on the visuals of the application in the three days before our release candidate is due.
 
 > What practices will you follow to improve your process if it's not working?
 
