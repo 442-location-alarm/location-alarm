@@ -2,16 +2,16 @@
 
 > How will you communicate with teammates you depend on?
 
-We will be using Facebook Messenger for text messaging and Discord for audio and video chatting. We chose Facebook Messenger because everyone checks it multiple times per day already, and we chose Discord because it has consistent audio and video quality.
+We will be using Facebook Messenger for text messaging and Discord for audio and video chatting. We chose Facebook Messenger because everyone checks it multiple times per day already, and we chose Discord because it is free and has better audio and video quality than other audio/video chat methods we have tried in the past (e.g. Skype and Facebook Messenger).
 
 > What coordination and planning practices will you follow?
 
-We will be having check-ins weekly on Saturdays at 2 PM over Discord because everybody is free at that time. We will conduct these check-ins Agile-style with each person sharing what they worked on the past week, what they will work on in the coming week, and any blockers. We are choosing Agile-style since it gives everyone insight into what the other people are working on and provides the possibility to work with someone else if having issues. If additional communication is needed, we will set up further meetings over Facebook Messenger.
+We will be having check-ins weekly on Saturdays at 2 PM over Discord because everybody is available at that time. We will conduct these check-ins Agile-style with each person sharing what they worked on the past week, what they will work on in the coming week, and any blockers. If any blockers exist, we will discuss the blocker as a team and determine the best course of action to remove the blocker. We are choosing Agile-style since it gives everyone insight into what the other people are working on, and provides the possibility to work with someone else if having issues. If additional communication is needed, we will set up further meetings over Facebook Messenger or Discord. 
 
 > Who will own each of the components in your architecture?
 
 ### AlarmStore and AlarmList
-James will be taking ownership of AlarmStore and AlarmList. He has had the most development experience, so we are giving him two components to take ownership of. Furthermore, the two components are related (AlarmList is created by AlarmStore), so it will make it easier to coordinate processes. Additionally, James has experience with databases from INFO 442 and his internship last summer, meaning he will be able to complete the AlarmStore quickly.
+James will be taking ownership of AlarmStore and AlarmList. He has had the most development experience, so we are giving him two components to take ownership of. Furthermore, the two components are related (AlarmList is created by AlarmStore), so it will make it easier to coordinate processes. Additionally, James has experience with databases from INFO 442 and his internship last summer, meaning he will be able to complete the AlarmStore quickly so that the other developers are not blocked since all the components rely on the AlarmStore. 
 
 ### Alarm
 Emily will be taking ownership of the Alarm component because it is connected with all of the other components and she is willing to coordinate with every member of the team. Joy will implement the enable and disable functions for Alarm since those two functions involve sending/removing notifications and she has experience with that.
