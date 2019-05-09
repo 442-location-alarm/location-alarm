@@ -31,6 +31,7 @@ We will have a release candidate by the end of June 7th (three days before the d
 Every member of the group will be checking commit history daily on GitHub to make sure that people are doing their work. To facilitate this, we have implemented automatic alerts in our Discord channel so everyone gets a notification when someone pushes to GitHub. We have deadlines set up for each component so we can ensure we are ready for release on June 7th:
 - AlarmStore, AlarmList, GoogleMaps, GooglePlaces due 5/30
 - Alarm due 6/4
+
 We chose these deadlines so we can really focus on setting everything up for the Alarm component the first two sprint, then focus on finishing the Alarm component halfway through the last sprint so we can work on the visuals of the application in the three days before our release candidate is due.
 
 > What practices will you follow to improve your process if it's not working?
