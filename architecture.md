@@ -82,6 +82,7 @@ Alarm creation and editing.
 - Distance from the alarm location - double
 - Alert - PendingIntent, function that makes the phone vibrate or play the ringer
 - Whether the alarm is active or not - boolean
+- Creation Date - datetime object
 
 ### Functionality
 - Create an alarm
