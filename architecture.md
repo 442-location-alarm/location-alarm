@@ -22,7 +22,7 @@ Tracks phone location and proximity to any active alarms. Fires an intent (phone
 - Remove proximity alert
     - Input:
         - Intent, the action that no longer needs to happen - PendingIntent
-    - Output
+    - Output:
         - N/A
 
 ### Connections
@@ -39,24 +39,29 @@ Saves, updates, and deletes alarm data in the application database and retrieves
 
 ### Functionality
 - Add alarm metadata
-    - Inputs
+    - Input:
         - Alarm data object (from AlarmManager)
-    - Output
+    - Output:
         - Alarm data object with new database ID
+- Get specific alarm
+    - Input:
+        - Alarm ID (long)
+    - Output:
+        - Alarm object
 - Update stored alarm metadata
     - Input:
         - Updated alarm object
-    - Output
+    - Output:
         - N/A
 - Delete alarm metadata
-    - Input
+    - Input:
         - Alarm ID (long)
-    - Output
+    - Output:
         - N/A
 - Get all alarm data
     - Input:
         - Alarm ID (long)
-    - Output
+    - Output:
         - Alarm list data object (AlarmList)
 
 ### Connections
