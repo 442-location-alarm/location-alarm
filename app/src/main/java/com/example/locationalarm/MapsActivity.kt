@@ -13,6 +13,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var latlng: LatLng
+    private lateinit var name: String
+    private lateinit var location: String
+    private var radius: Double = 0.0
+    private lateinit var alert: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +26,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        //USE THIS TO PUT DATA FOR ALARM INTENT: intent.putExtra("package.name.key", "value");
+        var extras = intent.extras //All Activities are started with an Intent
+        val lat = extras.getDouble("latitude")
+        val long = extras.getDouble("longitude")
+        latlng = LatLng(lat, long)
+        name = extras.getString("name")
+        location = extras.getString( "location")
+        radius = extras.getDouble("radius")
+        alert = extras.getString("alert")
     }
 
     /**
@@ -33,14 +48,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mapSetUp(mMap, LatLng(0.0, 0.0))
+        mapSetMarker(mMap, latlng)
     }
 
-    fun mapSetUp(googleMap: GoogleMap, alarmLocation: LatLng) {
+    //Set Marker for passed Alarm Intent
+    fun mapSetMarker(googleMap: GoogleMap, alarmLatlng: LatLng) {
         mMap = googleMap
 
         // Add a marker at Alarm Location and move the camera
-        val alarm = alarmLocation
+        val alarm = alarmLatlng
         mMap.addMarker(MarkerOptions().position(alarm).title("Location Alarm Set Here"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(alarm))
     }
