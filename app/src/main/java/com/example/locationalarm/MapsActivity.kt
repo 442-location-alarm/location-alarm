@@ -28,14 +28,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         //USE THIS TO PUT DATA FOR ALARM INTENT: intent.putExtra("package.name.key", "value");
-        var extras = intent.extras //All Activities are started with an Intent
-        val lat = extras.getDouble("latitude")
-        val long = extras.getDouble("longitude")
-        latlng = LatLng(lat, long)
-        name = extras.getString("name")
-        location = extras.getString( "location")
-        radius = extras.getDouble("radius")
-        alert = extras.getString("alert")
+//        var extras = intent.extras //All Activities are started with an Intent
+//        val lat = extras.getDouble("latitude")
+//        val long = extras.getDouble("longitude")
+//        latlng = LatLng(lat, long)
+//        name = extras.getString("name")
+//        location = extras.getString( "location")
+//        radius = extras.getDouble("radius")
+//        alert = extras.getString("alert")
     }
 
     /**
@@ -48,7 +48,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mapSetMarker(mMap, latlng)
+        mapSetMarker(mMap, LatLng(0.0, 0.0))
     }
 
     //Set Marker for passed Alarm Intent

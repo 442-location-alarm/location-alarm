@@ -14,10 +14,13 @@ class AlarmListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_list)
-        val db = AlarmDatabase.getInstance(this)
+        //val db = AlarmDatabase.getInstance(this)
+        val list = mutableListOf<Alarm>()
+        val alarm = Alarm("University", "Washington", 2.0, "vibrate")
+        list.add(alarm)
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = AlarmAdapter(db.alarmDao().getAll())
+        viewAdapter = AlarmAdapter(list)
 
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
             // use this setting to improve performance if you know that changes
