@@ -44,4 +44,7 @@ dependencies {
 
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+
+    // recycler view
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
 }
