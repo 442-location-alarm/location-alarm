@@ -18,6 +18,7 @@ class AlarmAdapter(private val myDataset: List<Alarm>) :
         fun bindView(alarm: Alarm) {
             itemView.name.text = alarm.name
             itemView.location.text = alarm.location
+            itemView.simpleSwitch.setChecked(alarm.active)
         }
     }
 

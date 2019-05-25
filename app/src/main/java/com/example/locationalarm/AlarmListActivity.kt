@@ -18,6 +18,7 @@ class AlarmListActivity : AppCompatActivity() {
         val list = mutableListOf<Alarm>()
         val alarm = Alarm("UW", "University of Washington", 2.0, "vibrate")
         val alarm2 = Alarm("Home", "123 Test Ln NE", 2.0, "vibrate")
+        alarm2.disable()
         list.add(alarm)
         list.add(alarm2)
 
