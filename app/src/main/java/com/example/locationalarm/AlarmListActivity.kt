@@ -16,8 +16,10 @@ class AlarmListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_alarm_list)
         //val db = AlarmDatabase.getInstance(this)
         val list = mutableListOf<Alarm>()
-        val alarm = Alarm("University", "Washington", 2.0, "vibrate")
+        val alarm = Alarm("UW", "University of Washington", 2.0, "vibrate")
+        val alarm2 = Alarm("Home", "123 Test Ln NE", 2.0, "vibrate")
         list.add(alarm)
+        list.add(alarm2)
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = AlarmAdapter(list)
