@@ -1,5 +1,6 @@
 package com.example.locationalarm
 
+import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class AlarmListActivity : AppCompatActivity(), AlarmAdapter.UpdateListener {
 
@@ -46,6 +48,12 @@ class AlarmListActivity : AppCompatActivity(), AlarmAdapter.UpdateListener {
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
 
+        }
+
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
+            val search = Intent(this@AlarmListActivity, SearchActivity::class.java)
+            startActivity(search)
         }
     }
 

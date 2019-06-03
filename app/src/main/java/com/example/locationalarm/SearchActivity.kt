@@ -10,6 +10,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -18,10 +21,9 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.location.places.ui.PlacePicker
 import com.google.android.gms.maps.model.Marker
 import java.io.IOException
 
@@ -31,10 +33,11 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
     private lateinit var mMap: GoogleMap
     private lateinit var latlng: LatLng
-    private lateinit var location: String
+    private lateinit var locationName: String
+    private lateinit var locationAddress: String
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
-    private lateinit var lcoationCallback: LocationCallback
+    private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
 
@@ -53,8 +56,17 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                super.onLocationResult(p0)
+                lastLocation = p0.lastLocation
+                mapSetMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
+            }
+        }
+        createLocationRequest()
     }
 
+    //Inital request for location based permissions
     private fun getLocationPermission() {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -69,32 +81,33 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             if (location != null) {
                 lastLocation = location
                 latlng = LatLng(location.latitude, location.longitude)
-                mapSetMarker(mMap, latlng)
+                mapSetMarker(latlng)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12f))
             }
         }
     }
 
-    private fun getAddress(latLng: LatLng): String {
-        val geocoder = Geocoder(this)
-        val addresses: List<Address>?
-        val address: Address?
-        var addressText = ""
-
-        try{
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            if (null !=  addresses && !addresses.isEmpty()) {
-                address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("MapsActivity", e.localizedMessage)
-        }
-
-        return addressText
-    }
+//    //Use GeoCoder to get an Address from a LatLng
+//    private fun getAddress(latLng: LatLng): String {
+//        val geocoder = Geocoder(this)
+//        val addresses: List<Address>?
+//        val address: Address?
+//        var addressText = ""
+//
+//        try{
+//            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+//            if (null !=  addresses && addresses.isNotEmpty()) {
+//                address = addresses[0]
+//                for (i in 0 until address.maxAddressLineIndex) {
+//                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
+//                }
+//            }
+//        } catch (e: IOException) {
+//            Log.e("SearchActivity", e.localizedMessage)
+//        }
+//
+//        return addressText
+//    }
 
     private fun loadPlacePicker() {
         val builder = PlacePicker.IntentBuilder()
@@ -113,6 +126,75 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
             return
         }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+    }
+
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest()
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 5000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val client = LocationServices.getSettingsClient(this)
+        val task = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener {
+            locationUpdateState = true
+            startLocationUpdates()
+        }
+        task.addOnFailureListener { e ->
+            if (e is ResolvableApiException) {
+                try {
+                    e.startResolutionForResult(this@SearchActivity, REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    //ignore the  error
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == Activity.RESULT_OK) {
+                locationUpdateState = true
+                startLocationUpdates()
+            }
+        }
+        //Retrieve Place Picker information and place marker at result
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                val place = PlacePicker.getPlace(this, data)
+                latlng = place.latLng
+                locationAddress = place.address.toString()
+                locationName = place.name.toString()
+
+                mapSetMarker(latlng)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        if (!locationUpdateState) {
+            startLocationUpdates()
+        }
+    }
+
+    //send Alarm Location Data in an Intent
+    private fun sendIntent() {
+        val intent = Intent(this@SearchActivity, Alarm::class.java) //CHANGE TO EDIT ? CREATE ACTIVITY ONCE IT EXISTS
+
+        intent.putExtra("name", locationName)
+        intent.putExtra("address", locationAddress)
+        intent.putExtra("latitude", latlng.latitude)
+        intent.putExtra("longitude", latlng.longitude)
+
+        startActivity(intent)
     }
 
     /**
@@ -131,15 +213,19 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
         getLocationPermission()
 
-        mapSetMarker(mMap, latlng)
+        mapSetMarker(latlng)
+
+        loadPlacePicker()
     }
 
-    //Set Marker for passed Alarm Intent
-    fun mapSetMarker(mMap: GoogleMap, alarmLatlng: LatLng) {
-        // Add a marker at Alarm Location and move the camera
-        val alarm = alarmLatlng
-
-        mMap.addMarker(MarkerOptions().position(alarm).title("Place an Alarm for this Location"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(alarm))
+    // Add a marker at Alarm Location and move the camera
+    fun mapSetMarker(alarmLatlng: LatLng) {
+        mMap.addMarker(MarkerOptions().position(alarmLatlng).title("Place an Alarm for this Location"))
+        mMap.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener() {
+            fun onInfoWindowClick(marker : Marker) {
+                sendIntent()
+            }
+        })
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(alarmLatlng))
     }
 }
