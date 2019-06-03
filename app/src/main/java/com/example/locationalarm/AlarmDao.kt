@@ -5,7 +5,7 @@ import androidx.room.*
 
 @Dao
 interface AlarmDao {
-    @Query("SELECT * FROM alarms")
+    @Query("SELECT * FROM alarms ORDER BY creation_date ASC")
     fun getAll(): LiveData<List<Alarm>>
 
     @Query("SELECT * FROM alarms WHERE uid = :alarmId")

@@ -22,13 +22,10 @@ class AlarmListActivity : AppCompatActivity(), AlarmAdapter.UpdateListener {
         setContentView(R.layout.activity_alarm_list)
 
 //        val db = AlarmDatabase.getInstance(this)
-//        val alarm = Alarm("UW", "University of Washington", 2.0, "vibrate")
-//        val alarm2 = Alarm("Home", "123 Test Ln NE", 2.0, "vibrate")
-//        alarm2.disable()
+//        val alarm = Alarm("Home2", "1234 Test LN", 2.0, "vibrate")
 //
 //        AsyncTask.execute {
 //            db.alarmDao().insert(alarm)
-//            db.alarmDao().insert(alarm2)
 //        }
 
         viewManager = LinearLayoutManager(this)

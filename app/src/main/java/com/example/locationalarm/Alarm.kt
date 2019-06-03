@@ -33,7 +33,7 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
     var active: Boolean = true
 
     @ColumnInfo(name = "creation_date")
-    var creationDate: Instant = Instant.now()
+    var creationDate: Long = System.currentTimeMillis()
 
     @JvmField
     @Ignore
@@ -90,7 +90,7 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
         dest.writeDouble(radius)
         dest.writeString(alert)
         dest.writeInt(if (active) 1 else 0)
-        dest.writeLong(creationDate.toEpochMilli())
+        dest.writeLong(creationDate)
     }
 
     override fun describeContents(): Int {
@@ -98,14 +98,14 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
     }
 
     private constructor(uid: String, name: String, location: String, radius: Double, alert: String, active: Boolean,
-                        creationDate: Instant) : this(name, location, radius, alert) {
+                        creationDate: Long) : this(name, location, radius, alert) {
         this.uid = uid
         this.active = active
         this.creationDate = creationDate
     }
 
     private constructor(source: Parcel) : this(source.readString()!!, source.readString()!!, source.readString()!!,
-        source.readDouble(), source.readString()!!, source.readInt() != 0, Instant.ofEpochMilli(source.readLong()))
+        source.readDouble(), source.readString()!!, source.readInt() != 0, source.readLong())
 
 
 }
