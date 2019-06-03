@@ -222,7 +222,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     fun mapSetMarker(alarmLatlng: LatLng) {
         mMap.addMarker(MarkerOptions().position(alarmLatlng).title("Place an Alarm for this Location"))
         mMap.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener() {
-            fun onInfoWindowClick(marker : Marker) {
+            fun onInfoWindowClick() {
                 sendIntent()
             }
         })
