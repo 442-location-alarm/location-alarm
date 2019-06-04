@@ -18,6 +18,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".CreateAlarmActivity">
+        </activity>
         <activity
                 android:name=".AlarmListActivity"
                 android:label="Saved Alarms">
@@ -42,7 +44,6 @@
         <activity
                 android:name=".SearchActivity"
                 android:label="@string/title_activity_maps">
-
         </activity>
     </application>
 
