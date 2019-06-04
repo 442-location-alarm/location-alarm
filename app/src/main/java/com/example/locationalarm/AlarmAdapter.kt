@@ -1,5 +1,6 @@
 package com.example.locationalarm
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,15 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                     Log.i("AlarmList","disabled")
                 }
                 updateListener.onUpdate(alarm)
+            }
+            itemView.setOnClickListener {
+                val intent = Intent(itemView.context, CreateAlarmActivity::class.java)
+                intent.putExtra("alarmName", alarm.name)
+                intent.putExtra("radius", alarm.radius)
+                intent.putExtra("alert", alarm.alert)
+                intent.putExtra("location", alarm.location)
+
+                itemView.context.startActivity(intent)
             }
         }
     }

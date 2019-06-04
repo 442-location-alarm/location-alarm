@@ -8,7 +8,8 @@
         android:orientation="vertical"
         tools:context=".CreateAlarmActivity">
 
-    <TextView android:layout_width="wrap_content"
+    <TextView android:id="@+id/txt_location_name"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               style="@style/TextAppearance.MaterialComponents.Headline6"
               android:layout_marginTop="20dp"
@@ -17,7 +18,8 @@
               android:text="Test Text"
     />
 
-    <Button android:layout_width="wrap_content"
+    <Button android:id="@+id/btn_edit_location"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Edit Location"
@@ -41,9 +43,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:max="50"
-             android:min="0"
-             android:progress="10"
-    />
+             android:min="0" />
 
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -73,13 +73,15 @@
                   android:orientation="horizontal"
                   android:layout_margin="6dp"
                   android:weightSum="2">
-        <Button android:layout_width="0dp"
+        <Button android:id="@+id/btn_save"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#009688"
                 android:textColor="#ffff"
                 android:text="Save"/>
-        <Button android:layout_width="0dp"
+        <Button android:id="@+id/btn_delete"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#F44336"

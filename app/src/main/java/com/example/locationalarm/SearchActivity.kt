@@ -32,7 +32,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
 
     private lateinit var mMap: GoogleMap
-    private lateinit var latlng: LatLng
+    private var latlng: LatLng = LatLng(-500.0, -500.0)
     private lateinit var locationName: String
     private lateinit var locationAddress: String
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -187,7 +187,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
     //send Alarm Location Data in an Intent
     private fun sendIntent() {
-        val intent = Intent(this@SearchActivity, Alarm::class.java) //CHANGE TO EDIT ? CREATE ACTIVITY ONCE IT EXISTS
+        val intent = Intent(this@SearchActivity, CreateAlarmActivity::class.java) //CHANGE TO EDIT ? CREATE ACTIVITY ONCE IT EXISTS
 
         intent.putExtra("name", locationName)
         intent.putExtra("address", locationAddress)
@@ -221,8 +221,8 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     // Add a marker at Alarm Location and move the camera
     fun mapSetMarker(alarmLatlng: LatLng) {
         mMap.addMarker(MarkerOptions().position(alarmLatlng).title("Place an Alarm for this Location"))
-        mMap.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener() {
-            fun onInfoWindowClick() {
+        mMap.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
+            override fun onInfoWindowClick(marker: Marker) {
                 sendIntent()
             }
         })
