@@ -33,8 +33,8 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
     private lateinit var mMap: GoogleMap
     private var latlng: LatLng = LatLng(-500.0, -500.0)
-    private lateinit var locationName: String
-    private lateinit var locationAddress: String
+    private var locationName: String = ""
+    private var locationAddress: String = ""
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
@@ -66,7 +66,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         createLocationRequest()
     }
 
-    //Inital request for location based permissions
+    //Initial request for location based permissions
     private fun getLocationPermission() {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -87,27 +87,27 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         }
     }
 
-//    //Use GeoCoder to get an Address from a LatLng
-//    private fun getAddress(latLng: LatLng): String {
-//        val geocoder = Geocoder(this)
-//        val addresses: List<Address>?
-//        val address: Address?
-//        var addressText = ""
-//
-//        try{
-//            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-//            if (null !=  addresses && addresses.isNotEmpty()) {
-//                address = addresses[0]
-//                for (i in 0 until address.maxAddressLineIndex) {
-//                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-//                }
-//            }
-//        } catch (e: IOException) {
-//            Log.e("SearchActivity", e.localizedMessage)
-//        }
-//
-//        return addressText
-//    }
+    //Use GeoCoder to get an Address from a LatLng
+    private fun getAddress(latLng: LatLng): String {
+        val geocoder = Geocoder(this)
+        val addresses: List<Address>?
+        val address: Address?
+        var addressText = ""
+
+        try{
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (null !=  addresses && addresses.isNotEmpty()) {
+                address = addresses[0]
+                for (i in 0 until address.maxAddressLineIndex) {
+                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("SearchActivity", e.localizedMessage)
+        }
+
+        return addressText
+    }
 
     private fun loadPlacePicker() {
         val builder = PlacePicker.IntentBuilder()
@@ -187,7 +187,15 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
     //send Alarm Location Data in an Intent
     private fun sendIntent() {
-        val intent = Intent(this@SearchActivity, CreateAlarmActivity::class.java) //CHANGE TO EDIT ? CREATE ACTIVITY ONCE IT EXISTS
+        val intent = Intent(this@SearchActivity, CreateAlarmActivity::class.java)
+
+        if (locationName.equals("")) {
+            locationName = "" + latlng.latitude +  ", " + latlng.longitude
+        }
+
+        if (locationAddress.equals("")) {
+            locationAddress = getAddress(latlng)
+        }
 
         intent.putExtra("name", locationName)
         intent.putExtra("address", locationAddress)
@@ -213,15 +221,13 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
         getLocationPermission()
 
-        mapSetMarker(latlng)
-
         loadPlacePicker()
     }
 
     // Add a marker at Alarm Location and move the camera
     fun mapSetMarker(alarmLatlng: LatLng) {
         mMap.addMarker(MarkerOptions().position(alarmLatlng).title("Place an Alarm for this Location"))
-        mMap.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
+        mMap.setOnInfoWindowClickListener(object: GoogleMap.OnInfoWindowClickListener {
             override fun onInfoWindowClick(marker: Marker) {
                 sendIntent()
             }
