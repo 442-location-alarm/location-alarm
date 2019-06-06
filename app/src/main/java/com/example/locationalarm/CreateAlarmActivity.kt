@@ -13,8 +13,19 @@ class CreateAlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_alarm)
 
+        val extras = intent.extras
+        val name = extras.getString("name")
+        val address = extras.getString("address")
+        val latitude = extras.getDouble("latitude")
+        val longitude = extras.getDouble("longitude")
+
         val locationName = findViewById<TextView>(R.id.txt_location_name)
-        locationName.text = intent.extras.getString("name")
+        //if there is no name, use the address
+        if (name.equals("")) {
+            locationName.text = intent.extras.getString("name")
+        } else {
+            locationName.text = intent.extras.getString("address")
+        }
 
         val btnEditLocation = findViewById<Button>(R.id.btn_edit_location)
         btnEditLocation.setOnClickListener {
@@ -77,12 +88,6 @@ class CreateAlarmActivity : AppCompatActivity() {
         btnSave.isEnabled = (currentRadius > 0) &&
                 (soundCheckBox.isChecked || vibrateCheckBox.isChecked) &&
                 !alarmName.text.isNullOrEmpty()
-
-        val extras = intent.extras
-        val name = extras.getString("name")
-        val address = extras.getString("address")
-        val latitude = extras.getDouble("latitude")
-        val longitude = extras.getDouble("longitude")
 
         btnSave.setOnClickListener {
             // TODO uncomment when latlng have been implemented in Alarm class

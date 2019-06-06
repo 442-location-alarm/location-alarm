@@ -5,8 +5,11 @@ import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
@@ -58,7 +61,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
                 lastLocation = p0.lastLocation
-                mapSetMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
+                //mapSetMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
 
@@ -109,7 +112,6 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         } catch (e: IOException) {
             Log.e("SearchActivity", e.localizedMessage)
         }
-
         return addressText
     }
 
@@ -193,10 +195,6 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     private fun sendIntent() {
         val intent = Intent(this@SearchActivity, CreateAlarmActivity::class.java)
 
-        if (locationName.equals("")) {
-            locationName = "" + latlng.latitude +  ", " + latlng.longitude
-        }
-
         if (locationAddress.equals("")) {
             locationAddress = getAddress(latlng)
         }
@@ -224,12 +222,18 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         mMap.uiSettings.isZoomControlsEnabled = true
 
         getLocationPermission()
+
+        mMap.setOnMapClickListener {
+            //mMap.clear()
+            mapSetMarker(it)
+        }
     }
 
     // Add a marker at Alarm Location and move the camera
     fun mapSetMarker(alarmLatlng: LatLng) {
-        mMap.clear() // clears previous markers on map before adding new ones!!!
-        mMap.addMarker(MarkerOptions().position(alarmLatlng).title("Place an Alarm for this Location"))
+        latlng = alarmLatlng
+        mMap.clear()
+        mMap.addMarker(MarkerOptions().position(latlng).title("Place an Alarm for this Location"))
         mMap.setOnInfoWindowClickListener(object: GoogleMap.OnInfoWindowClickListener {
             override fun onInfoWindowClick(marker: Marker) {
                 sendIntent()
