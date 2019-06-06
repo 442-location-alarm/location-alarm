@@ -1,11 +1,11 @@
 package com.example.locationalarm
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 
 class CreateAlarmActivity : AppCompatActivity() {
 
@@ -36,6 +36,7 @@ class CreateAlarmActivity : AppCompatActivity() {
 
         var currentRadius = 0
 
+        // TODO finish implementing the slider logic
         val radiusSlider = findViewById<SeekBar>(R.id.slider)
         radiusSlider.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -57,12 +58,19 @@ class CreateAlarmActivity : AppCompatActivity() {
         val vibrateCheckBox = findViewById<CheckBox>(R.id.vibrate_checkbox)
 
         if (intent.hasExtra("alert")) {
-            val alert = intent.extras.getString("alert")
-            if (alert.equals("sound")) {
+            val _alert = intent.extras.getString("alert")
+            if (_alert.equals("sound")) {
                 soundCheckBox.isChecked = true
-            } else if (alert.equals("vibrate")) {
+            } else if (_alert.equals("vibrate")) {
                 vibrateCheckBox.isChecked = true
             }
+        }
+
+        var alert = ""
+        if (soundCheckBox.isChecked) {
+            alert = "sound"
+        } else if (vibrateCheckBox.isChecked) {
+            alert = "vibrate"
         }
 
         val btnSave = findViewById<Button>(R.id.btn_save)
@@ -70,8 +78,15 @@ class CreateAlarmActivity : AppCompatActivity() {
                 (soundCheckBox.isChecked || vibrateCheckBox.isChecked) &&
                 !alarmName.text.isNullOrEmpty()
 
+        val extras = intent.extras
+        val name = extras.getString("name")
+        val address = extras.getString("address")
+        val latitude = extras.getDouble("latitude")
+        val longitude = extras.getDouble("longitude")
+
         btnSave.setOnClickListener {
-            // TODO Save all alarm data
+            // TODO uncomment when latlng have been implemented in Alarm class
+//            Alarm(name, address, currentRadius.toDouble(), alert, latitude, longitude)
         }
     }
 }

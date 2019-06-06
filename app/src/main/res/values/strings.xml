@@ -4,4 +4,6 @@
     <string name="test_alarm_title">
         <b>UW</b>
     </string>
+    <string name="channel_name">LocationAlarm</string>
+    <string name="channel_description">Proximity alert for when you are in the radius of a desired location.</string>
 </resources>

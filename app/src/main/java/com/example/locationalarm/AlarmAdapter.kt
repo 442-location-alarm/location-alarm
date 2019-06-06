@@ -28,11 +28,15 @@ class AlarmAdapter(var updateListener: UpdateListener) :
             itemView.location.text = alarm.location
             itemView.simpleSwitch.setChecked(alarm.active)
             itemView.simpleSwitch.setOnCheckedChangeListener{ _, isChecked ->
+                val intent = Intent(itemView.context, ProximityNotificationsService::class.java)
                 if (isChecked) {
-                    alarm.enable()
+                    intent.putExtra("radius", alarm.radius)
+//                    intent.putExtra("name", alarm.name)
+                    // TODO pass in lat and lng as extras
+                    itemView.context.startService(intent)
                     Log.i("AlarmList", "enabled")
                 } else {
-                    alarm.disable()
+                    itemView.context.stopService(intent)
                     Log.i("AlarmList","disabled")
                 }
                 updateListener.onUpdate(alarm)
