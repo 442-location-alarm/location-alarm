@@ -216,6 +216,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
     // Add a marker at Alarm Location and move the camera
     fun mapSetMarker(alarmLatlng: LatLng) {
+        mMap.clear() // clears previous markers on map before adding new ones!!!
         mMap.addMarker(MarkerOptions().position(alarmLatlng).title("Place an Alarm for this Location"))
         mMap.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
             override fun onInfoWindowClick(marker: Marker) {

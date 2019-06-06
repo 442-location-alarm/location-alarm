@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 
 class ProximityIntentReceiver : BroadcastReceiver() {
     private val NOTIFICATION_ID = 1000
@@ -28,7 +29,7 @@ class ProximityIntentReceiver : BroadcastReceiver() {
             Log.d(javaClass.simpleName, "exiting")
         }
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+        var notificationManager: NotificationManager
 
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -40,16 +41,27 @@ class ProximityIntentReceiver : BroadcastReceiver() {
                 description = descriptionText
             }
             // Register the channel with the system
-            val notificationManager: NotificationManager =
+            notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        } else {
+            notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         }
 
-        val pendingIntent = PendingIntent.getActivity(context, 0, null, 0)
+
+        val intent = Intent(context, AlarmListActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         // TODO finish making notifications!
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle("")
+            .setContentText("")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
 
-
+        with(NotificationManagerCompat.from(context)) {
+            notify(NOTIFICATION_ID, notification.build())
+        }
     }
 }
