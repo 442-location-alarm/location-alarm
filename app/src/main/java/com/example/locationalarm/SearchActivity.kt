@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.location.places.ui.PlacePicker
 import com.google.android.gms.maps.model.Marker
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.IOException
 
 class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
@@ -63,7 +64,13 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                 mapSetMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
+
         createLocationRequest()
+
+        val fab = findViewById<FloatingActionButton>(R.id.search)
+        fab.setOnClickListener {
+            loadPlacePicker()
+        }
     }
 
     //Initial request for location based permissions
@@ -82,7 +89,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                 lastLocation = location
                 latlng = LatLng(location.latitude, location.longitude)
                 mapSetMarker(latlng)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15f))
             }
         }
     }
@@ -220,8 +227,6 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         mMap.uiSettings.isZoomControlsEnabled = true
 
         getLocationPermission()
-
-        loadPlacePicker()
     }
 
     // Add a marker at Alarm Location and move the camera
@@ -232,6 +237,5 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                 sendIntent()
             }
         })
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(alarmLatlng))
     }
 }
