@@ -45,11 +45,11 @@ class CreateAlarmActivity : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                // Does nothing, is a prefab function that has to be here I think
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                // Does nothing, is a prefab function that has to be here I think
             }
         })
 
