@@ -10,7 +10,7 @@ import java.util.*
 
 
 @Entity(tableName = "alarms")
-class Alarm(name: String, location: String, radius: Double, alert: String) : Parcelable {
+class Alarm(name: String, location: String, radius: Double, alert: String, latitude: Double, longitude: Double) : Parcelable {
 
     @PrimaryKey
     var uid: String = UUID.randomUUID().toString()
@@ -19,10 +19,9 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
 
     var location: String = location
 
-//    TODO: These should be instantiated once the Google Places API is complete
-//    var latitude: Double
-//
-//    var longitude: Double
+    var latitude: Double = latitude
+
+    var longitude: Double = longitude
 
 
     var radius: Double = radius
@@ -56,7 +55,6 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
 
         val otherAlarm = other as Alarm
 
-        // TODO: Add in lat/long once implemented
         return uid == otherAlarm.uid
                 && name == otherAlarm.name
                 && location == otherAlarm.location
@@ -64,11 +62,12 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
                 && alert == otherAlarm.alert
                 && active == otherAlarm.active
                 && creationDate == otherAlarm.creationDate
+                && latitude == otherAlarm.latitude
+                && longitude == otherAlarm.longitude
     }
 
-    // TODO: Add in latLng once implemented
     override fun hashCode(): Int {
-        return Objects.hash(uid, name, location, radius, alert, active, creationDate)
+        return Objects.hash(uid, name, location, radius, alert, active, creationDate, latitude, longitude)
     }
 
     fun enable() {
@@ -81,11 +80,12 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
         active = false
     }
 
-    // TODO: Add lat and long
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(uid)
         dest.writeString(name)
         dest.writeString(location)
+        dest.writeDouble(latitude)
+        dest.writeDouble(longitude)
         dest.writeDouble(radius)
         dest.writeString(alert)
         dest.writeInt(if (active) 1 else 0)
@@ -96,15 +96,17 @@ class Alarm(name: String, location: String, radius: Double, alert: String) : Par
         return 0
     }
 
-    private constructor(uid: String, name: String, location: String, radius: Double, alert: String, active: Boolean,
-                        creationDate: Long) : this(name, location, radius, alert) {
+    private constructor(uid: String, name: String, location: String , latitude: Double, longitude: Double,
+                        radius: Double, alert: String, active: Boolean, creationDate: Long) :
+                        this(name, location, radius, alert, latitude, longitude) {
         this.uid = uid
         this.active = active
         this.creationDate = creationDate
     }
 
     private constructor(source: Parcel) : this(source.readString()!!, source.readString()!!, source.readString()!!,
-        source.readDouble(), source.readString()!!, source.readInt() != 0, source.readLong())
+        source.readDouble(), source.readDouble(), source.readDouble(), source.readString()!!,
+        source.readInt() != 0, source.readLong())
 
 
 }
