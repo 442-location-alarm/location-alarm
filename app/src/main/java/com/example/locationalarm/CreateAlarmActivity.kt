@@ -22,9 +22,9 @@ class CreateAlarmActivity : AppCompatActivity() {
         val locationName = findViewById<TextView>(R.id.txt_location_name)
         //if there is no name, use the address
         if (name.equals("")) {
-            locationName.text = intent.extras.getString("name")
-        } else {
             locationName.text = intent.extras.getString("address")
+        } else {
+            locationName.text = intent.extras.getString("name")
         }
 
         val btnEditLocation = findViewById<Button>(R.id.btn_edit_location)
@@ -92,6 +92,9 @@ class CreateAlarmActivity : AppCompatActivity() {
         btnSave.setOnClickListener {
             // TODO uncomment when latlng have been implemented in Alarm class
 //            Alarm(name, address, currentRadius.toDouble(), alert, latitude, longitude)
+            Toast.makeText(this, "Alarm Saved!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
+            startActivity(intent)
         }
     }
 }

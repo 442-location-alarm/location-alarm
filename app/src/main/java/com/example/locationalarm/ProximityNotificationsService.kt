@@ -26,8 +26,8 @@ class ProximityNotificationsService : Service() {
             // TODO change these to values received from the intent once Maddie is done with the Search acitivity
             val latitude: Double = -500.0
             val longitude: Double = -500.0
-            val radius: Float = 1.0 as Float
-            val expiration: Long = 6000
+            val radius: Float = getMeters(intent.extras.getDouble("radius"))
+            val expiration: Long = -1
 
             locationManager.addProximityAlert(
                 latitude,     // the latitude of the central point of the alert region
@@ -41,6 +41,10 @@ class ProximityNotificationsService : Service() {
             registerReceiver(ProximityIntentReceiver(), filter)
         }
 
+    }
+
+    private fun getMeters(i: Double): Float {
+        return (i * 1609.344).toFloat()
     }
 
     override fun onStart(intent: Intent?, startId: Int) {

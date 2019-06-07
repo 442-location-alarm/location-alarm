@@ -31,7 +31,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 val intent = Intent(itemView.context, ProximityNotificationsService::class.java)
                 if (isChecked) {
                     intent.putExtra("radius", alarm.radius)
-//                    intent.putExtra("name", alarm.name)
+                    intent.putExtra("name", alarm.name)
                     // TODO pass in lat and lng as extras
                     itemView.context.startService(intent)
                     Log.i("AlarmList", "enabled")
