@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.location.LocationManager
+import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -15,7 +16,10 @@ import androidx.core.app.NotificationManagerCompat
 
 class ProximityIntentReceiver : BroadcastReceiver() {
     private val NOTIFICATION_ID = 1000
-    private val CHANNEL_ID = "LocationAlarm"
+
+    companion object {
+        val CHANNEL_ID = "LocationAlarm"
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
 
@@ -28,34 +32,22 @@ class ProximityIntentReceiver : BroadcastReceiver() {
         } else {
             Log.d(javaClass.simpleName, "exiting")
         }
-
-        var notificationManager: NotificationManager
-
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = Resources.getSystem().getString(R.string.channel_name)
-            val descriptionText = Resources.getSystem().getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        } else {
-            notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        if (alarmUri == null) {
+            alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
+        val ringtone = RingtoneManager.getRingtone(context, alarmUri)
 
+        if (intent.extras.getString("alert").equals("sound")) {
+            ringtone.play()
+        }
 
         val intent = Intent(context, AlarmListActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
-        // TODO finish making notifications!
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("")
-            .setContentText("")
+            .setContentTitle("You're almost there!")
+            .setContentText("You are in the radius of your destination")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)

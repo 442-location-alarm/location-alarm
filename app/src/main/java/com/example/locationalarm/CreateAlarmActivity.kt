@@ -90,8 +90,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                 !alarmName.text.isNullOrEmpty()
 
         btnSave.setOnClickListener {
-            // TODO uncomment when latlng have been implemented in Alarm class
-//            Alarm(name, address, currentRadius.toDouble(), alert, latitude, longitude)
+            Alarm(name, address, currentRadius.toDouble(), alert, latitude, longitude)
             Toast.makeText(this, "Alarm Saved!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
             startActivity(intent)

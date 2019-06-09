@@ -1,10 +1,17 @@
 package com.example.locationalarm
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_text_view.view.*
 
@@ -23,20 +30,52 @@ class AlarmAdapter(var updateListener: UpdateListener) :
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        val NOTIFICATION_ID = 2000
+
         fun bindView(alarm: Alarm, updateListener: UpdateListener) {
             itemView.name.text = alarm.name
             itemView.location.text = alarm.location
             itemView.simpleSwitch.setChecked(alarm.active)
             itemView.simpleSwitch.setOnCheckedChangeListener{ _, isChecked ->
                 val intent = Intent(itemView.context, ProximityNotificationsService::class.java)
+                intent.putExtra("radius", alarm.radius)
+                intent.putExtra("name", alarm.name)
+                intent.putExtra("latitude", alarm.latitude)
+                intent.putExtra("longitude", alarm.longitude)
+                var notificationManager: NotificationManager
+
+                // Create the NotificationChannel, but only on API 26+ because
+                // the NotificationChannel class is new and not in the support library
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val name = Resources.getSystem().getString(R.string.channel_name)
+                    val descriptionText = Resources.getSystem().getString(R.string.channel_description)
+                    val importance = NotificationManager.IMPORTANCE_DEFAULT
+                    val channel = NotificationChannel(ProximityIntentReceiver.CHANNEL_ID, name, importance).apply {
+                        description = descriptionText
+                    }
+                    // Register the channel with the system
+                    notificationManager =
+                        itemView.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.createNotificationChannel(channel)
+                } else {
+                    notificationManager = itemView.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                }
                 if (isChecked) {
-                    intent.putExtra("radius", alarm.radius)
-                    intent.putExtra("name", alarm.name)
-                    // TODO pass in lat and lng as extras
                     itemView.context.startService(intent)
+                    // persistent notification
+                    val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
+                        .setContentText("${alarm.name} is currently enabled")
+                        .setOnlyAlertOnce(true)
+                        .setOngoing(true)
+
+                    with(NotificationManagerCompat.from(itemView.context)) {
+                        notify(NOTIFICATION_ID, notification.build())
+                    }
                     Log.i("AlarmList", "enabled")
                 } else {
                     itemView.context.stopService(intent)
+                    notificationManager.cancel(NOTIFICATION_ID)
                     Log.i("AlarmList","disabled")
                 }
                 updateListener.onUpdate(alarm)
@@ -52,7 +91,6 @@ class AlarmAdapter(var updateListener: UpdateListener) :
             }
         }
     }
-
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup,
