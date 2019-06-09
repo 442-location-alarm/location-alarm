@@ -17,6 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.location.places.ui.PlacePicker
+import com.google.android.libraries.places.compat.Place;
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -105,7 +106,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (null !=  addresses && addresses.isNotEmpty()) {
                 address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
+                for (i in 0 until 0) { //address.maxAddressLineIndex
                     addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
                 }
             }
