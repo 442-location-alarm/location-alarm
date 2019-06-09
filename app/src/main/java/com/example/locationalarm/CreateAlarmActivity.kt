@@ -21,10 +21,10 @@ class CreateAlarmActivity : AppCompatActivity() {
 
         val locationName = findViewById<TextView>(R.id.txt_location_name)
         //if there is no name, use the address
-        if (name.equals("")) {
-            locationName.text = intent.extras.getString("address")
+        if (name == "") {
+            locationName.text = address
         } else {
-            locationName.text = intent.extras.getString("name")
+            locationName.text = name
         }
 
         val btnEditLocation = findViewById<Button>(R.id.btn_edit_location)
