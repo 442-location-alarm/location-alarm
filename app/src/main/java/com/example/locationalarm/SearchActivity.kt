@@ -62,7 +62,6 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
                 lastLocation = p0.lastLocation
-                //mapSetMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
 
@@ -106,7 +105,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (null !=  addresses && addresses.isNotEmpty()) {
                 address = addresses[0]
-                for (i in 0 until 0) { //address.maxAddressLineIndex
+                for (i in 0 until address.maxAddressLineIndex + 1) {
                     addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
                 }
             }
@@ -196,7 +195,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     private fun sendIntent() {
         val intent = Intent(this@SearchActivity, CreateAlarmActivity::class.java)
 
-        if (locationAddress.equals("")) {
+        if (locationAddress == "") {
             locationAddress = getAddress(latlng)
         }
 
@@ -225,7 +224,6 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         getLocationPermission()
 
         mMap.setOnMapClickListener {
-            //mMap.clear()
             mapSetMarker(it)
         }
     }
