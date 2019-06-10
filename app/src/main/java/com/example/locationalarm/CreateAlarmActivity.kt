@@ -1,8 +1,10 @@
 package com.example.locationalarm
 
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -13,6 +15,10 @@ class CreateAlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_alarm)
+
+        val btnSave = findViewById<Button>(R.id.btn_save)
+        var alert = ""
+        var currentRadius = 0
 
         val extras = intent.extras
         val name = extras.getString("name")
@@ -38,21 +44,28 @@ class CreateAlarmActivity : AppCompatActivity() {
 
         val alarmName = findViewById<EditText>(R.id.edit_txt_alarmName)
         if (intent.hasExtra("alarmName")) {
-            alarmName.text = intent.extras.getString("alarmName") as Editable
+            alarmName.text = SpannableStringBuilder(intent.extras.getString("alarmName"))
             btnDelete.visibility = View.VISIBLE
+            Log.d("DeleteVis", btnDelete.visibility.toString())
         } else {
             btnDelete.visibility = View.GONE
         }
 
-        val txtRadius = findViewById<TextView>(R.id.txt_radius)
+        if (!alert.isBlank() && currentRadius > 0) {
+            btnSave.isEnabled = true
+        }
 
-        var currentRadius = 0
+        val txtRadius = findViewById<TextView>(R.id.txt_radius)
 
         val radiusSlider = findViewById<SeekBar>(R.id.slider)
         radiusSlider.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 txtRadius.text = "$progress mile radius"
                 currentRadius = progress
+
+                if (!alert.isBlank() && !alarmName.text.isNullOrBlank()) {
+                    btnSave.isEnabled = true
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -76,32 +89,36 @@ class CreateAlarmActivity : AppCompatActivity() {
                 vibrateCheckBox.isChecked = true
             }
         }
-        
-        var alert = ""
+
         soundCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 alert = "sound"
+
+                if (currentRadius > 0 && !alarmName.text.isNullOrBlank()) {
+                    btnSave.isEnabled = true
+                }
             }
         }
 
         vibrateCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 alert = "vibrate"
+
+                if (currentRadius > 0 && !alarmName.text.isNullOrBlank()) {
+                    btnSave.isEnabled = true
+                }
             }
         }
 
-        val alertBool = !alert.isBlank()
-        val radiusBool = currentRadius > 0
-        val nameBool = !alarmName.text.isNullOrBlank()
-        Log.d("CreateAlarm", "$alertBool, $radiusBool, $nameBool")
+        Log.d("SaveEnable", btnSave.isEnabled.toString())
 
-        val btnSave = findViewById<Button>(R.id.btn_save)
-        btnSave.isEnabled = radiusBool &&
-                alertBool &&
-                nameBool
-
+        val db = AlarmDatabase.getInstance(this)
         btnSave.setOnClickListener {
-            Alarm(name, address, currentRadius.toDouble(), alert, latitude, longitude)
+            val alarm = Alarm(alarmName.text.toString(), address, currentRadius.toDouble(), alert, latitude, longitude)
+            Log.d("AlarmCreate", alarm.name)
+            AsyncTask.execute {
+                db.alarmDao().insert(alarm)
+            }
             Toast.makeText(this, "Alarm Saved!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
             startActivity(intent)
