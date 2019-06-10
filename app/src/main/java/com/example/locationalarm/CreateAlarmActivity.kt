@@ -1,7 +1,11 @@
 package com.example.locationalarm
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
@@ -11,6 +15,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class CreateAlarmActivity : AppCompatActivity() {
+
+    val NOTIFICATION_ID = 2000
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,6 +167,26 @@ class CreateAlarmActivity : AppCompatActivity() {
             AsyncTask.execute {
                 db.alarmDao().delete(alarmId)
             }
+            var notificationManager: NotificationManager
+
+            // Create the NotificationChannel, but only on API 26+ because
+            // the NotificationChannel class is new and not in the support library
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val name = "LocationAlarm"
+                val descriptionText = "Proximity alert for when you are in the radius of a desired location."
+                val importance = NotificationManager.IMPORTANCE_DEFAULT
+                val channel = NotificationChannel(ProximityIntentReceiver.CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
+                // Register the channel with the system
+                notificationManager =
+                    this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.createNotificationChannel(channel)
+            } else {
+                notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            }
+            notificationManager.cancel(NOTIFICATION_ID)
+
             Toast.makeText(this, "Alarm Deleted!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
             startActivity(intent)

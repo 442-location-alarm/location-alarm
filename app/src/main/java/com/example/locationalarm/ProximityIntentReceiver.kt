@@ -46,6 +46,7 @@ class ProximityIntentReceiver : BroadcastReceiver() {
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("You're almost there!")
             .setContentText("You are in the radius of your destination")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -48,8 +49,8 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 // Create the NotificationChannel, but only on API 26+ because
                 // the NotificationChannel class is new and not in the support library
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val name = Resources.getSystem().getString(R.string.channel_name)
-                    val descriptionText = Resources.getSystem().getString(R.string.channel_description)
+                    val name = "LocationAlarm"
+                    val descriptionText = "Proximity alert for when you are in the radius of a desired location."
                     val importance = NotificationManager.IMPORTANCE_DEFAULT
                     val channel = NotificationChannel(ProximityIntentReceiver.CHANNEL_ID, name, importance).apply {
                         description = descriptionText
@@ -65,6 +66,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                     itemView.context.startService(intent)
                     // persistent notification
                     val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText("${alarm.name} is currently enabled")
                         .setOnlyAlertOnce(true)
                         .setOngoing(true)
@@ -80,7 +82,8 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 }
                 updateListener.onUpdate(alarm)
             }
-            itemView.setOnClickListener {
+            val chev = itemView.findViewById<ImageView>(R.id.chev)
+            chev.setOnClickListener {
                 val intent = Intent(itemView.context, CreateAlarmActivity::class.java)
                 intent.putExtra("alarmId", alarm.uid)
                 intent.putExtra("alarmName", alarm.name)
