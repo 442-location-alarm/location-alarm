@@ -44,19 +44,19 @@ class AlarmAdapter(var updateListener: UpdateListener) :
             itemView.name.text = alarm.name
             itemView.location.text = alarm.location
             itemView.simpleSwitch.setChecked(alarm.active)
-//            if (itemView.simpleSwitch.isChecked) {
-//                itemView.context.startService(intent)
-//                // persistent notification
-//                val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
-//                    .setSmallIcon(R.mipmap.ic_launcher)
-//                    .setContentText("${alarm.name} is currently enabled")
-//                    .setOnlyAlertOnce(true)
-//                    .setOngoing(true)
-//
-//                with(NotificationManagerCompat.from(itemView.context)) {
-//                    notify(NOTIFICATION_ID, notification.build())
-//                }
-//            }
+            if (itemView.simpleSwitch.isChecked) {
+                itemView.context.startService(intent)
+                // persistent notification
+                val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentText("${alarm.name} is currently enabled")
+                    .setOnlyAlertOnce(true)
+                    .setOngoing(true)
+
+                with(NotificationManagerCompat.from(itemView.context)) {
+                    notify(NOTIFICATION_ID, notification.build())
+                }
+            }
             itemView.simpleSwitch.setOnCheckedChangeListener{ _, isChecked ->
 
                 var notificationManager: NotificationManager

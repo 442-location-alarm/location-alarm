@@ -13,6 +13,11 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import android.os.VibrationEffect
+import androidx.core.content.ContextCompat.getSystemService
+import android.os.Vibrator
+
+
 
 class ProximityIntentReceiver : BroadcastReceiver() {
     private val NOTIFICATION_ID = 1000
@@ -39,15 +44,24 @@ class ProximityIntentReceiver : BroadcastReceiver() {
         val ringtone = RingtoneManager.getRingtone(context, alarmUri)
 
         Log.d("IntentReceiver", intent.toString())
+        val vibrate = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
 
+        val pattern = longArrayOf(0, 100, 1000)
         if (intent.hasExtra("alert")) {
-            if (intent.extras.getString("alert").equals("sound")) {
+            val alert = intent.extras.getString("alert")
+            if (alert.equals("sound")) {
                 ringtone.play()
+            }
+            if (alert.equals("vibrate")) {
+                vibrate!!.vibrate(pattern, 0)
             }
         }
 
         val intent = Intent(context, AlarmListActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+        val cancelAlarmIntent = Intent(context, CancelAlarmReceiver::class.java)
+        val cancelAlarmPendingIntent = PendingIntent.getBroadcast(context, 0, cancelAlarmIntent, 0)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -56,6 +70,7 @@ class ProximityIntentReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
+            .addAction(R.drawable.ic_snooze, "Stop Alarm", cancelAlarmPendingIntent)
 
         with(NotificationManagerCompat.from(context)) {
             notify(NOTIFICATION_ID, notification.build())
