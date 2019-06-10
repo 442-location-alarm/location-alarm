@@ -25,4 +25,7 @@ interface AlarmDao {
 
     @Query("UPDATE alarms SET location = :location, latitude = :latitude, longitude = :longitude WHERE uid = :alarmID")
     fun updateLocation(alarmID: String, location: String, latitude: Double, longitude: Double)
+
+    @Update
+    fun update(alarm: Alarm)
 }

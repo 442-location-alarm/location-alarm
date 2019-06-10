@@ -119,14 +119,40 @@ class CreateAlarmActivity : AppCompatActivity() {
 
         val db = AlarmDatabase.getInstance(this)
         btnSave.setOnClickListener {
-            val alarm = Alarm(alarmName.text.toString(), address, currentRadius.toDouble(), alert, latitude, longitude)
-            Log.d("AlarmCreate", alarm.name)
-            AsyncTask.execute {
-                db.alarmDao().insert(alarm)
+            if (intent.hasExtra("alarmId")) {
+                if (!alarmName.text.toString().equals(intent.extras.getString("alarmName"))) {
+                    AsyncTask.execute {
+                        db.alarmDao()
+                            .updateName(alarmID = intent.extras.getString("alarmId"), name = alarmName.text.toString())
+                    }
+                }
+
+                if (!currentRadius.toDouble().equals(intent.extras.getDouble("radius"))) {
+                    AsyncTask.execute {
+                        db.alarmDao()
+                            .updateRadius(alarmID = intent.extras.getString("alarmId"), radius = currentRadius.toDouble())
+                    }
+                }
+
+                if (!alert.equals(intent.extras.getString("alert"))) {
+                    AsyncTask.execute {
+                        db.alarmDao()
+                            .updateAlert(alarmID = intent.extras.getString("alarmId"), alert = alert)
+                    }
+                }
+                Toast.makeText(this, "Alarm Updated!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
+                startActivity(intent)
+            } else {
+                val alarm = Alarm(alarmName.text.toString(), address, currentRadius.toDouble(), alert, latitude, longitude)
+                Log.d("AlarmCreate", alarm.name)
+                AsyncTask.execute {
+                    db.alarmDao().insert(alarm)
+                }
+                Toast.makeText(this, "Alarm Saved!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
+                startActivity(intent)
             }
-            Toast.makeText(this, "Alarm Saved!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
-            startActivity(intent)
         }
 
         btnDelete.setOnClickListener {
