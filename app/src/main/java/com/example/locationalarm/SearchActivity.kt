@@ -10,11 +10,14 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
 //import com.google.android.gms.location.places.ui.PlacePicker
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,10 +33,13 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import kotlinx.android.synthetic.main.activity_maps.*
 import java.util.*
 
-class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
+class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, PlaceSelectionListener  {
     override fun onMarkerClick(p0: Marker?) = false
 
 
@@ -119,20 +125,17 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     }
 
     private fun loadPlacePicker() {
-        Places.initialize(this, "AIzaSyC_1cy-X2JKlHeS9r9YJcuaAlm8ELiZBRo")
-        val placesClient = Places.createClient(this)
-        val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
-        // Start the autocomplete intent.
-        val intent = Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, fields)
-                .build(this)
-        try {
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-        } catch (e: GooglePlayServicesRepairableException) {
-            e.printStackTrace()
-        } catch (e: GooglePlayServicesNotAvailableException) {
-            e.printStackTrace()
-        }
+        Places.initialize(applicationContext, "AIzaSyC_1cy-X2JKlHeS9r9YJcuaAlm8ELiZBRo")
+
+        // Initialize the AutocompleteSupportFragment.
+        val autocompleteFragment =
+        autocomplete_fragment as AutocompleteSupportFragment
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(this)
     }
 
     private fun startLocationUpdates() {
@@ -274,5 +277,18 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                 sendIntent()
             }
         })
+    }
+
+    override fun onPlaceSelected(@NonNull p0: Place) {
+        latlng = p0.latLng!!
+        Log.d("SearchActivity", p0.toString())
+        locationAddress = p0.address.toString()
+        locationName = p0.name.toString()
+
+        mapSetMarker(latlng)
+    }
+
+    override fun onError(status: Status) {
+        Toast.makeText(applicationContext,""+status.toString(),Toast.LENGTH_LONG).show()
     }
 }
