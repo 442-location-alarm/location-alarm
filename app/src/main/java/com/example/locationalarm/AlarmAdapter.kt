@@ -35,16 +35,30 @@ class AlarmAdapter(var updateListener: UpdateListener) :
         val NOTIFICATION_ID = 2000
 
         fun bindView(alarm: Alarm, updateListener: UpdateListener) {
+            val intent = Intent(itemView.context, ProximityNotificationsService::class.java)
+            intent.putExtra("radius", alarm.radius)
+            intent.putExtra("name", alarm.name)
+            intent.putExtra("latitude", alarm.latitude)
+            intent.putExtra("longitude", alarm.longitude)
+            intent.putExtra("alert", alarm.alert)
             itemView.name.text = alarm.name
             itemView.location.text = alarm.location
             itemView.simpleSwitch.setChecked(alarm.active)
+            if (itemView.simpleSwitch.isChecked) {
+                itemView.context.startService(intent)
+                // persistent notification
+                val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentText("${alarm.name} is currently enabled")
+                    .setOnlyAlertOnce(true)
+                    .setOngoing(true)
+
+                with(NotificationManagerCompat.from(itemView.context)) {
+                    notify(NOTIFICATION_ID, notification.build())
+                }
+            }
             itemView.simpleSwitch.setOnCheckedChangeListener{ _, isChecked ->
-                val intent = Intent(itemView.context, ProximityNotificationsService::class.java)
-                intent.putExtra("radius", alarm.radius)
-                intent.putExtra("name", alarm.name)
-                intent.putExtra("latitude", alarm.latitude)
-                intent.putExtra("longitude", alarm.longitude)
-                intent.putExtra("alert", alarm.alert)
+
                 var notificationManager: NotificationManager
 
                 // Create the NotificationChannel, but only on API 26+ because

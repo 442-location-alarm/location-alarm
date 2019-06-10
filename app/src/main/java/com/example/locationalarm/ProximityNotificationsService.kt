@@ -19,8 +19,6 @@ class ProximityNotificationsService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
-
     }
 
     private fun getMeters(i: Double): Float {
