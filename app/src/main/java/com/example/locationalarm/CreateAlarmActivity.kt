@@ -3,6 +3,7 @@ package com.example.locationalarm
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -47,7 +48,6 @@ class CreateAlarmActivity : AppCompatActivity() {
 
         var currentRadius = 0
 
-        // TODO finish implementing the slider logic
         val radiusSlider = findViewById<SeekBar>(R.id.slider)
         radiusSlider.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -76,18 +76,29 @@ class CreateAlarmActivity : AppCompatActivity() {
                 vibrateCheckBox.isChecked = true
             }
         }
-
+        
         var alert = ""
-        if (soundCheckBox.isChecked) {
-            alert = "sound"
-        } else if (vibrateCheckBox.isChecked) {
-            alert = "vibrate"
+        soundCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                alert = "sound"
+            }
         }
 
+        vibrateCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                alert = "vibrate"
+            }
+        }
+
+        val alertBool = !alert.isBlank()
+        val radiusBool = currentRadius > 0
+        val nameBool = !alarmName.text.isNullOrBlank()
+        Log.d("CreateAlarm", "$alertBool, $radiusBool, $nameBool")
+
         val btnSave = findViewById<Button>(R.id.btn_save)
-        btnSave.isEnabled = (currentRadius > 0) &&
-                (soundCheckBox.isChecked || vibrateCheckBox.isChecked) &&
-                !alarmName.text.isNullOrEmpty()
+        btnSave.isEnabled = radiusBool &&
+                alertBool &&
+                nameBool
 
         btnSave.setOnClickListener {
             Alarm(name, address, currentRadius.toDouble(), alert, latitude, longitude)

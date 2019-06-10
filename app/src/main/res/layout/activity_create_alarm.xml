@@ -9,13 +9,12 @@
         tools:context=".CreateAlarmActivity">
 
     <TextView android:id="@+id/txt_location_name"
-              android:layout_width="match_parent"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               style="@style/TextAppearance.MaterialComponents.Headline6"
               android:layout_marginTop="20dp"
               android:layout_marginBottom="20dp"
               android:layout_gravity="center"
-              android:text="Test Text"
     />
 
     <Button android:id="@+id/btn_edit_location"
@@ -36,7 +35,7 @@
               android:layout_margin="20dp"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="Temp text"
+              android:text="0 mile radius"
     />
 
     <SeekBar android:id="@+id/slider"
