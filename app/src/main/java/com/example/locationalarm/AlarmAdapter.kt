@@ -88,6 +88,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 intent.putExtra("alert", alarm.alert)
                 intent.putExtra("latitude", alarm.latitude)
                 intent.putExtra("longitude", alarm.longitude)
+                intent.putExtra("location", alarm.location)
 
                 itemView.context.startActivity(intent)
             }
