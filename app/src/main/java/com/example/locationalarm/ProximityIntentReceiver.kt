@@ -38,8 +38,12 @@ class ProximityIntentReceiver : BroadcastReceiver() {
         }
         val ringtone = RingtoneManager.getRingtone(context, alarmUri)
 
-        if (intent.extras.getString("alert").equals("sound")) {
-            ringtone.play()
+        Log.d("IntentReceiver", intent.toString())
+
+        if (intent.hasExtra("alert")) {
+            if (intent.extras.getString("alert").equals("sound")) {
+                ringtone.play()
+            }
         }
 
         val intent = Intent(context, AlarmListActivity::class.java)

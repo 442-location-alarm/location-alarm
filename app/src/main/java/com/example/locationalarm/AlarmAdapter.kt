@@ -44,6 +44,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 intent.putExtra("name", alarm.name)
                 intent.putExtra("latitude", alarm.latitude)
                 intent.putExtra("longitude", alarm.longitude)
+                intent.putExtra("alert", alarm.alert)
                 var notificationManager: NotificationManager
 
                 // Create the NotificationChannel, but only on API 26+ because
@@ -64,6 +65,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 }
                 if (isChecked) {
                     itemView.context.startService(intent)
+                    alarm.active = true
                     // persistent notification
                     val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
@@ -76,6 +78,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                     }
                     Log.i("AlarmList", "enabled")
                 } else {
+                    alarm.active = false
                     itemView.context.stopService(intent)
                     notificationManager.cancel(NOTIFICATION_ID)
                     Log.i("AlarmList","disabled")

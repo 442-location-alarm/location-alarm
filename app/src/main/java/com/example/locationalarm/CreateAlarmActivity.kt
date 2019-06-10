@@ -143,6 +143,15 @@ class CreateAlarmActivity : AppCompatActivity() {
                                 .updateAlert(alarmID = intent.extras.getString("alarmId"), alert = alert)
                         }
                     }
+
+                    Log.d("CreateAlarm", extras.getString("location"))
+                    Log.d("CreateAlarm", locationName.text.toString())
+
+//                    if (!intent.extras.getString("location").equals(locationName.text.toString())) {
+//                        AsyncTask.execute {
+//                            db.alarmDao().updateLocation(alarmID = intent.extras.getString("alarmId"), location = locationName.text.toString(), latitude = extras.getDouble("latitude"), longitude = extras.getDouble("longitude"))
+//                        }
+//                    }
                     Toast.makeText(this, "Alarm Updated!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
                     startActivity(intent)
