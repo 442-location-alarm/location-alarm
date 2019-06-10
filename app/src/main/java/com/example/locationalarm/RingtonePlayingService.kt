@@ -1,13 +1,10 @@
 package com.example.locationalarm
 
 import android.app.Service
-import android.app.Service.START_NOT_STICKY
-import android.media.RingtoneManager
-import androidx.core.app.NotificationCompat.getExtras
 import android.content.Intent
-import android.os.IBinder
 import android.media.Ringtone
-import android.net.Uri
+import android.media.RingtoneManager
+import android.os.IBinder
 
 
 class RingtonePlayingService : Service() {
