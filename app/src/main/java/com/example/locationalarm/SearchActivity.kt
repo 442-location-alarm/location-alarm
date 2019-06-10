@@ -212,22 +212,32 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         val extras = intent.extras
         val searchIntent = Intent(this@SearchActivity, CreateAlarmActivity::class.java)
 
-        // check if alarm data is sent via intent and send that to create alarm :D
-        if (intent.hasExtra("alarmId")) {
-            searchIntent.putExtra("alarmId", extras.getString("alarmId"))
-            searchIntent.putExtra("alarmName", extras.getString("alarmName"))
-            searchIntent.putExtra("radius", extras.getDouble("radius"))
-            searchIntent.putExtra("alert", extras.getString("alert"))
-        }
-
         if (locationAddress == "") {
             locationAddress = getAddress(latlng)
         }
 
-        searchIntent.putExtra("name", locationName)
-        searchIntent.putExtra("address", locationAddress)
-        searchIntent.putExtra("latitude", latlng.latitude)
-        searchIntent.putExtra("longitude", latlng.longitude)
+        var alarmLocation: String
+        if (locationName == "") {
+            alarmLocation = locationAddress
+        } else {
+            alarmLocation = locationName
+        }
+
+        // check if alarm data is sent via intent and send that to create alarm :D
+        if (intent.hasExtra("edit")) {
+            searchIntent.putExtra("edit", 1)
+
+            val alarm = extras.getParcelable("alarm") as Alarm
+            alarm.location = alarmLocation
+            alarm.latitude = latlng.latitude
+            alarm.longitude = latlng.longitude
+
+            searchIntent.putExtra("alarm", alarm)
+        } else {
+            searchIntent.putExtra("address", alarmLocation)
+            searchIntent.putExtra("latitude", latlng.latitude)
+            searchIntent.putExtra("longitude", latlng.longitude)
+        }
 
         startActivity(searchIntent)
     }

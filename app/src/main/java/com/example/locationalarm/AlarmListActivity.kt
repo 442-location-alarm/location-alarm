@@ -20,12 +20,6 @@ class AlarmListActivity : AppCompatActivity(), AlarmAdapter.UpdateListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_list)
 
-//        val db = AlarmDatabase.getInstance(this)
-//        val alarm = Alarm("Home2", "1234 Test LN", 2.0, "vibrate")
-//
-//        AsyncTask.execute {
-//            db.alarmDao().insert(alarm)
-//        }
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = AlarmAdapter(this)

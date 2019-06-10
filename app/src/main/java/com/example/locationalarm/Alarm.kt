@@ -33,9 +33,7 @@ class Alarm(name: String, location: String, radius: Double, alert: String, latit
     @ColumnInfo(name = "creation_date")
     var creationDate: Long = System.currentTimeMillis()
 
-    @JvmField
-    @Ignore
-    val CREATOR: Parcelable.Creator<Alarm> = object : Parcelable.Creator<Alarm> {
+    companion object CREATOR: Parcelable.Creator<Alarm> {
         override fun newArray(size: Int): Array<Alarm?> {
             return arrayOfNulls(size)
         }

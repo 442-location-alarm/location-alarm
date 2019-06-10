@@ -44,19 +44,19 @@ class AlarmAdapter(var updateListener: UpdateListener) :
             itemView.name.text = alarm.name
             itemView.location.text = alarm.location
             itemView.simpleSwitch.setChecked(alarm.active)
-            if (itemView.simpleSwitch.isChecked) {
-                itemView.context.startService(intent)
-                // persistent notification
-                val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentText("${alarm.name} is currently enabled")
-                    .setOnlyAlertOnce(true)
-                    .setOngoing(true)
-
-                with(NotificationManagerCompat.from(itemView.context)) {
-                    notify(NOTIFICATION_ID, notification.build())
-                }
-            }
+//            if (itemView.simpleSwitch.isChecked) {
+//                itemView.context.startService(intent)
+//                // persistent notification
+//                val notification = NotificationCompat.Builder(itemView.context, ProximityIntentReceiver.CHANNEL_ID)
+//                    .setSmallIcon(R.mipmap.ic_launcher)
+//                    .setContentText("${alarm.name} is currently enabled")
+//                    .setOnlyAlertOnce(true)
+//                    .setOngoing(true)
+//
+//                with(NotificationManagerCompat.from(itemView.context)) {
+//                    notify(NOTIFICATION_ID, notification.build())
+//                }
+//            }
             itemView.simpleSwitch.setOnCheckedChangeListener{ _, isChecked ->
 
                 var notificationManager: NotificationManager
@@ -102,13 +102,8 @@ class AlarmAdapter(var updateListener: UpdateListener) :
             val chev = itemView.findViewById<ImageView>(R.id.chev)
             chev.setOnClickListener {
                 val intent = Intent(itemView.context, CreateAlarmActivity::class.java)
-                intent.putExtra("alarmId", alarm.uid)
-                intent.putExtra("alarmName", alarm.name)
-                intent.putExtra("radius", alarm.radius)
-                intent.putExtra("alert", alarm.alert)
-                intent.putExtra("latitude", alarm.latitude)
-                intent.putExtra("longitude", alarm.longitude)
-                intent.putExtra("location", alarm.location)
+                intent.putExtra("alarm", alarm)
+                intent.putExtra("edit", 1)
 
                 itemView.context.startActivity(intent)
             }

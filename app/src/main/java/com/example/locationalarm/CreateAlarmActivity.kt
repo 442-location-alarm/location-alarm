@@ -13,6 +13,9 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import android.text.TextWatcher
+
+
 
 class CreateAlarmActivity : AppCompatActivity() {
 
@@ -22,51 +25,70 @@ class CreateAlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_alarm)
 
+        // Database
+        val db = AlarmDatabase.getInstance(this)
+
+        // Views
         val btnSave = findViewById<Button>(R.id.btn_save)
-        var alert = ""
-        var currentRadius = 0
+        val locationName = findViewById<TextView>(R.id.txt_location_name)
+        val btnDelete = findViewById<Button>(R.id.btn_delete)
+        val alarmName = findViewById<EditText>(R.id.edit_txt_alarmName)
+        val txtRadius = findViewById<TextView>(R.id.txt_radius)
+        val radiusSlider = findViewById<SeekBar>(R.id.slider)
+        val soundCheckBox = findViewById<CheckBox>(R.id.sound_checkbox)
+        val vibrateCheckBox = findViewById<CheckBox>(R.id.vibrate_checkbox)
+        val btnEditLocation = findViewById<Button>(R.id.btn_edit_location)
 
         val extras = intent.extras
-        val name = extras.getString("name")
-        val address = extras.getString("address")
-        val latitude = extras.getDouble("latitude")
-        val longitude = extras.getDouble("longitude")
 
-        val locationName = findViewById<TextView>(R.id.txt_location_name)
-        //if there is no name, use the address
-        if (intent.hasExtra("location")) {
-            locationName.text = extras.getString("location")
-        } else {
-            if (name == "") {
-                locationName.text = address
-            } else {
-                locationName.text = name
-            }
-        }
+        var alert = ""
 
-        val btnDelete = findViewById<Button>(R.id.btn_delete)
+        var alarm: Alarm
 
-        val alarmName = findViewById<EditText>(R.id.edit_txt_alarmName)
-        if (intent.hasExtra("alarmName")) {
-            alarmName.text = SpannableStringBuilder(intent.extras.getString("alarmName"))
+        // Edit alarm
+        if (intent.hasExtra("edit")) {
+            // Can delete
             btnDelete.visibility = View.VISIBLE
-            Log.d("DeleteVis", btnDelete.visibility.toString())
+
+            alarm = extras.getParcelable("alarm") as Alarm
+
+        // Creating a new alarm
         } else {
+            // Cannot delete
             btnDelete.visibility = View.GONE
+
+
+            val address = extras.getString("address")
+            val latitude = extras.getDouble("latitude")
+            val longitude = extras.getDouble("longitude")
+
+            alarm = Alarm(name = "", location = address, latitude = latitude, longitude = longitude, radius = 0.0, alert = "")
         }
 
-        val txtRadius = findViewById<TextView>(R.id.txt_radius)
+        // Nickname
+        alarmName.text = SpannableStringBuilder(alarm.name)
 
-        val radiusSlider = findViewById<SeekBar>(R.id.slider)
-        if (intent.hasExtra("radius")) {
-            val radius = intent.extras.getDouble("radius").toInt()
-            radiusSlider.progress = radius
-            txtRadius.text = "$radius mile radius"
+        // Location
+        locationName.text = alarm.location
+
+        // Radius (slider and text)
+        val radius = alarm.radius.toInt()
+        radiusSlider.progress = radius
+        txtRadius.text = "$radius mile radius"
+
+        // Alert checkboxes
+        val _alert = alarm.alert
+        if (_alert.equals("sound")) {
+            soundCheckBox.isChecked = true
+        } else if (_alert.equals("vibrate")) {
+            vibrateCheckBox.isChecked = true
         }
+
+        // Slider listener
         radiusSlider.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 txtRadius.text = "$progress mile radius"
-                currentRadius = progress
+                alarm.radius = progress.toDouble()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -78,85 +100,58 @@ class CreateAlarmActivity : AppCompatActivity() {
             }
         })
 
-        val soundCheckBox = findViewById<CheckBox>(R.id.sound_checkbox)
-
-        val vibrateCheckBox = findViewById<CheckBox>(R.id.vibrate_checkbox)
-
-        if (intent.hasExtra("alert")) {
-            val _alert = intent.extras.getString("alert")
-            if (_alert.equals("sound")) {
-                soundCheckBox.isChecked = true
-            } else if (_alert.equals("vibrate")) {
-                vibrateCheckBox.isChecked = true
-            }
-        }
-
+        // Checkbox listeners
         soundCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                alert = "sound"
+                alarm.alert = "sound"
             }
         }
-
         vibrateCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                alert = "vibrate"
+                alarm.alert = "vibrate"
             }
         }
 
-        Log.d("SaveEnable", btnSave.isEnabled.toString())
+        // Nickname listener
+        alarmName.addTextChangedListener(object : TextWatcher {
 
-        val btnEditLocation = findViewById<Button>(R.id.btn_edit_location)
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                alarm.name = s.toString()
+            }
+        })
+
         btnEditLocation.setOnClickListener {
             // send alarm data to search activity
             val intent = Intent(this@CreateAlarmActivity, SearchActivity::class.java)
-            intent.putExtra("alarmId", extras.getString("alarmId"))
-            intent.putExtra("alarmName", alarmName.text.toString())
-            intent.putExtra("radius", radiusSlider.progress.toDouble())
-            intent.putExtra("alert", extras.getString("alert"))
+            intent.putExtra("alarm", alarm)
+            intent.putExtra("edit", 1)
             startActivity(intent)
         }
 
-        val db = AlarmDatabase.getInstance(this)
         btnSave.setOnClickListener {
             if (alarmName.text.toString().equals("") || radiusSlider.progress == 0 || (!soundCheckBox.isChecked && !vibrateCheckBox.isChecked)) {
                 Toast.makeText(this,"One or more of the fields is not filled out!", Toast.LENGTH_LONG).show()
             } else {
-                if (intent.hasExtra("alarmId")) {
-                    if (!alarmName.text.toString().equals(intent.extras.getString("alarmName"))) {
-                        AsyncTask.execute {
-                            db.alarmDao()
-                                .updateName(alarmID = intent.extras.getString("alarmId"), name = alarmName.text.toString())
-                        }
+                if (intent.hasExtra("edit")) {
+                    AsyncTask.execute {
+                        db.alarmDao().update(alarm)
                     }
 
-                    if (!currentRadius.toDouble().equals(intent.extras.getDouble("radius"))) {
-                        AsyncTask.execute {
-                            db.alarmDao()
-                                .updateRadius(alarmID = intent.extras.getString("alarmId"), radius = currentRadius.toDouble())
-                        }
-                    }
-
-                    if (!alert.equals(intent.extras.getString("alert"))) {
-                        AsyncTask.execute {
-                            db.alarmDao()
-                                .updateAlert(alarmID = intent.extras.getString("alarmId"), alert = alert)
-                        }
-                    }
-
-                    Log.d("CreateAlarm", extras.getString("location"))
-                    Log.d("CreateAlarm", locationName.text.toString())
-
-//                    if (!intent.extras.getString("location").equals(locationName.text.toString())) {
-//                        AsyncTask.execute {
-//                            db.alarmDao().updateLocation(alarmID = intent.extras.getString("alarmId"), location = locationName.text.toString(), latitude = extras.getDouble("latitude"), longitude = extras.getDouble("longitude"))
-//                        }
-//                    }
                     Toast.makeText(this, "Alarm Updated!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
                     startActivity(intent)
                 } else {
-                    val alarm = Alarm(alarmName.text.toString(), locationName.text.toString(), currentRadius.toDouble(), alert, latitude, longitude)
-                    Log.d("AlarmCreate", alarm.name)
                     AsyncTask.execute {
                         db.alarmDao().insert(alarm)
                     }
@@ -168,12 +163,8 @@ class CreateAlarmActivity : AppCompatActivity() {
         }
 
         btnDelete.setOnClickListener {
-            var alarmId = ""
-            if (intent.hasExtra("alarmId")) {
-                alarmId = intent.extras.getString("alarmId")
-            }
             AsyncTask.execute {
-                db.alarmDao().delete(alarmId)
+                db.alarmDao().delete(alarm.uid)
             }
             var notificationManager: NotificationManager
 
