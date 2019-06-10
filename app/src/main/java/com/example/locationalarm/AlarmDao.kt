@@ -8,14 +8,11 @@ interface AlarmDao {
     @Query("SELECT * FROM alarms ORDER BY creation_date ASC")
     fun getAll(): LiveData<List<Alarm>>
 
-    @Query("SELECT * FROM alarms WHERE uid = :alarmId")
-    fun getById(alarmId: Int): Alarm
-
     @Insert
     fun insert(alarm: Alarm)
 
-    @Delete
-    fun delete(alarm: Alarm)
+    @Query("DELETE FROM alarms WHERE uid = :alarmId")
+    fun delete(alarmId: String): Alarm
 
     @Update
     fun update(alarm: Alarm)
