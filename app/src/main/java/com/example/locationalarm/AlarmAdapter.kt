@@ -99,8 +99,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                 }
                 updateListener.onUpdate(alarm)
             }
-            val chev = itemView.findViewById<ImageView>(R.id.chev)
-            chev.setOnClickListener {
+            itemView.setOnClickListener {
                 val intent = Intent(itemView.context, CreateAlarmActivity::class.java)
                 intent.putExtra("alarm", alarm)
                 intent.putExtra("edit", 1)
