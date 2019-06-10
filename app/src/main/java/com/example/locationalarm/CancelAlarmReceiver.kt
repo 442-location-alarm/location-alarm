@@ -36,13 +36,8 @@ class CancelAlarmReceiver : BroadcastReceiver() {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         val vibrate = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
 
-        var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        if (alarmUri == null) {
-            alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        }
-        val ringtone = RingtoneManager.getRingtone(context, alarmUri)
-
-        ringtone.stop()
+        val stopIntent = Intent(context, RingtonePlayingService::class.java)
+        context.stopService(stopIntent)
         vibrate!!.cancel()
 
         notificationManager.cancel(NOTIFICATION_ID)
