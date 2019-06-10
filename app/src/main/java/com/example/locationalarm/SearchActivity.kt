@@ -16,8 +16,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.location.places.ui.PlacePicker
-import com.google.android.libraries.places.compat.Place;
+//import com.google.android.gms.location.places.ui.PlacePicker
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -27,6 +26,12 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.IOException
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import java.util.*
 
 class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
     override fun onMarkerClick(p0: Marker?) = false
@@ -47,6 +52,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val PLACE_PICKER_REQUEST = 3
+        private const val AUTOCOMPLETE_REQUEST_CODE = 4
     }
 
 
@@ -67,10 +73,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
         createLocationRequest()
 
-        val fab = findViewById<FloatingActionButton>(R.id.search)
-        fab.setOnClickListener {
-            loadPlacePicker()
-        }
+        loadPlacePicker()
     }
 
     //Initial request for location based permissions
@@ -116,10 +119,15 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     }
 
     private fun loadPlacePicker() {
-        val builder = PlacePicker.IntentBuilder()
-
+        Places.initialize(this, "AIzaSyC_1cy-X2JKlHeS9r9YJcuaAlm8ELiZBRo")
+        val placesClient = Places.createClient(this)
+        val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
+        // Start the autocomplete intent.
+        val intent = Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY, fields)
+                .build(this)
         try {
-            startActivityForResult(builder.build(this@SearchActivity), PLACE_PICKER_REQUEST)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         } catch (e: GooglePlayServicesRepairableException) {
             e.printStackTrace()
         } catch (e: GooglePlayServicesNotAvailableException) {
@@ -167,14 +175,22 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             }
         }
         //Retrieve Place Picker information and place marker at result
-        if (requestCode == PLACE_PICKER_REQUEST) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                val place = PlacePicker.getPlace(this, data)
-                latlng = place.latLng
+                val place = Autocomplete.getPlaceFromIntent(data!!)
+                latlng = place.latLng!!
+                Log.d("SearchActivity", place.toString())
                 locationAddress = place.address.toString()
                 locationName = place.name.toString()
 
                 mapSetMarker(latlng)
+                Log.i("SearchActivity", "Place: " + place.name + ", " + place.id);
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                val status = Autocomplete.getStatusFromIntent(data!!)
+                Log.i("SearchActivity", status.statusMessage);
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
             }
         }
     }
@@ -242,6 +258,7 @@ class SearchActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         latlng = alarmLatlng
         mMap.clear()
         mMap.addMarker(MarkerOptions().position(latlng).title("Place an Alarm for this Location"))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15f))
         mMap.setOnInfoWindowClickListener(object: GoogleMap.OnInfoWindowClickListener {
             override fun onInfoWindowClick(marker: Marker) {
                 sendIntent()
