@@ -37,7 +37,7 @@ class ProximityNotificationsService : Service() {
 
             val proxIntent = Intent(PROX_ALERT_INTENT)
                 proxIntent.putExtra("alert", intent.extras.getString("alert"))
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, proxIntent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, proxIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             locationManager.addProximityAlert(
                 latitude,     // the latitude of the central point of the alert region
                 longitude,    // the longitude of the central point of the alert region

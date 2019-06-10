@@ -37,18 +37,17 @@ class ProximityIntentReceiver : BroadcastReceiver() {
         } else {
             Log.d(javaClass.simpleName, "exiting")
         }
-        val startIntent = Intent(context, RingtonePlayingService::class.java)
+        val startRingIntent = Intent(context, RingtonePlayingService::class.java)
         Log.d("IntentReceiver", intent.toString())
-        val vibrate = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
-        val pattern = longArrayOf(0, 100, 1000)
+
+        val startVibrateIntent = Intent(context, VibrateService::class.java)
 
         if (intent.hasExtra("alert")) {
             val alert = intent.extras.getString("alert")
             if (alert.equals("sound")) {
-                context.startService(startIntent)
-            }
-            if (alert.equals("vibrate")) {
-                vibrate!!.vibrate(pattern, 0)
+                context.startService(startRingIntent)
+            } else {
+                context.stopService(startVibrateIntent)
             }
         }
 

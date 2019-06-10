@@ -22,7 +22,7 @@ class RingtonePlayingService : Service() {
         this.ringtone = RingtoneManager.getRingtone(this, alarmUri)
         ringtone!!.play()
 
-        return START_NOT_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {

@@ -34,12 +34,10 @@ class CancelAlarmReceiver : BroadcastReceiver() {
             notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         }
 
-        val vibrate = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
-
-        val stopIntent = Intent(context, RingtonePlayingService::class.java)
-        context.stopService(stopIntent)
-        vibrate!!.cancel()
-
+        val stopRingIntent = Intent(context, RingtonePlayingService::class.java)
+        context.stopService(stopRingIntent)
+        val stopVibrateIntent = Intent(context, RingtonePlayingService::class.java)
+        context.stopService(stopVibrateIntent)
         notificationManager.cancel(NOTIFICATION_ID)
     }
 }
