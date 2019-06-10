@@ -18,7 +18,6 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     val NOTIFICATION_ID = 2000
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_alarm)
