@@ -12,7 +12,7 @@ interface AlarmDao {
     fun insert(alarm: Alarm)
 
     @Query("DELETE FROM alarms WHERE uid = :alarmId")
-    fun delete(alarmId: String): Alarm
+    fun delete(alarmId: String)
 
     @Update
     fun update(alarm: Alarm)

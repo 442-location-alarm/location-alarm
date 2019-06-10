@@ -82,6 +82,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
             }
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, CreateAlarmActivity::class.java)
+                intent.putExtra("alarmId", alarm.uid)
                 intent.putExtra("alarmName", alarm.name)
                 intent.putExtra("radius", alarm.radius)
                 intent.putExtra("alert", alarm.alert)

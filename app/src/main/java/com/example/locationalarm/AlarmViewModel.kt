@@ -26,7 +26,7 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
         executorService.execute { alarmDao.update(alarm) }
     }
 
-    fun deleteAlarm(alarm: Alarm) {
+    fun deleteAlarm(alarm: String) {
         executorService.execute { alarmDao.delete(alarm) }
     }
 }

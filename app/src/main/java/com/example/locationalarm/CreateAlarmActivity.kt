@@ -58,6 +58,11 @@ class CreateAlarmActivity : AppCompatActivity() {
         val txtRadius = findViewById<TextView>(R.id.txt_radius)
 
         val radiusSlider = findViewById<SeekBar>(R.id.slider)
+        if (intent.hasExtra("radius")) {
+            val radius = intent.extras.getDouble("radius").toInt()
+            radiusSlider.progress = radius
+            txtRadius.text = "$radius mile radius"
+        }
         radiusSlider.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 txtRadius.text = "$progress mile radius"
@@ -120,6 +125,19 @@ class CreateAlarmActivity : AppCompatActivity() {
                 db.alarmDao().insert(alarm)
             }
             Toast.makeText(this, "Alarm Saved!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnDelete.setOnClickListener {
+            var alarmId = ""
+            if (intent.hasExtra("alarmId")) {
+                alarmId = intent.extras.getString("alarmId")
+            }
+            AsyncTask.execute {
+                db.alarmDao().delete(alarmId)
+            }
+            Toast.makeText(this, "Alarm Deleted!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@CreateAlarmActivity, AlarmListActivity::class.java)
             startActivity(intent)
         }
