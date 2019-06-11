@@ -20,7 +20,7 @@ class AlarmListActivity : AppCompatActivity(), AlarmAdapter.UpdateListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_list)
 
-
+        supportActionBar!!.title = "Saved Alarms"
         viewManager = LinearLayoutManager(this)
         viewAdapter = AlarmAdapter(this)
 
