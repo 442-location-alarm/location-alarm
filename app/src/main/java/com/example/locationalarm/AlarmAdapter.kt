@@ -2,6 +2,7 @@ package com.example.locationalarm
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -93,7 +94,9 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                     Log.i("AlarmList", "enabled")
                 } else {
                     alarm.active = false
+                    val cancelAlarmIntent = Intent(itemView.context, CancelAlarmReceiver::class.java) //MADDIE ADDED
                     itemView.context.stopService(intent)
+                    itemView.context.startService(cancelAlarmIntent) //MADDIE ADDED
                     notificationManager.cancel(NOTIFICATION_ID)
                     Log.i("AlarmList","disabled")
                 }

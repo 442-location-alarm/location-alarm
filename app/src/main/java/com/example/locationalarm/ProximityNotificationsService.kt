@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.ActivityCompat
 
 class ProximityNotificationsService : Service() {
@@ -54,6 +55,7 @@ class ProximityNotificationsService : Service() {
     override fun onDestroy() {
         unregisterReceiver(receiver)
         super.onDestroy()
+
     }
 
     override fun onBind(intent: Intent): IBinder {

@@ -62,7 +62,7 @@ class ProximityIntentReceiver : BroadcastReceiver() {
             .setContentTitle("You're almost there!")
             .setContentText("You are in the radius of your destination")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
+            //.setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .addAction(R.drawable.ic_snooze, "Stop Alarm", cancelAlarmPendingIntent)
 

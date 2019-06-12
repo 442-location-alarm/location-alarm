@@ -1,5 +1,7 @@
 package com.example.locationalarm
 
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -69,12 +71,10 @@ class Alarm(name: String, location: String, radius: Double, alert: String, latit
     }
 
     fun enable() {
-        // TODO: Joy add stuff here
         active = true
     }
 
     fun disable() {
-        // TODO: Joy add stuff here
         active = false
     }
 
