@@ -96,7 +96,7 @@ class AlarmAdapter(var updateListener: UpdateListener) :
                     alarm.active = false
                     val cancelAlarmIntent = Intent(itemView.context, CancelAlarmReceiver::class.java) //MADDIE ADDED
                     itemView.context.stopService(intent)
-                    itemView.context.startService(cancelAlarmIntent) //MADDIE ADDED
+                    itemView.context.stopService(cancelAlarmIntent) //MADDIE ADDED
                     notificationManager.cancel(NOTIFICATION_ID)
                     Log.i("AlarmList","disabled")
                 }
