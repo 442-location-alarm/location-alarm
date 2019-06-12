@@ -47,7 +47,7 @@ class ProximityIntentReceiver : BroadcastReceiver() {
             if (alert.equals("sound")) {
                 context.startService(startRingIntent)
             } else {
-                context.stopService(startVibrateIntent)
+                context.startService(startVibrateIntent)
             }
         }
 
